@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom';
 import {AuthContext} from "../context/AuthContext";
 
 function Profile() {
-    const {username, email, isAuth, login, logout} = useContext(AuthContext);
+    const {username, email} = useContext(AuthContext);
     return (
         <>
             <h1>Profielpagina</h1>
@@ -11,8 +11,6 @@ function Profile() {
                 <h2>Gegevens</h2>
                 <p><strong>Gebruikersnaam:</strong> {username}</p>
                 <p><strong>Email:</strong> {email}</p>
-                <p><strong>ingelogd:</strong> {isAuth.toString()}</p>
-                <button onClick={isAuth ? logout : login}></button>
             </section>
             <section>
                 <h2>Strikt geheime profiel-content</h2>
