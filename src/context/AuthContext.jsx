@@ -7,8 +7,8 @@ function AuthContextProvider({children}) {
     const navigate = useNavigate();
     const [auth, setAuth] = useState({username: "", email: "", isAuth: false});
 
-    function login(username, email) {
-        setAuth({...auth, username: "Matthieu", isAuth: true});
+    function login(email, pass) {
+        setAuth({...auth, email: email, isAuth: true});
         console.log("Gebruiker is ingelogd!");
         navigate("/profile");
     }
