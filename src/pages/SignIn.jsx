@@ -45,7 +45,6 @@ function SignIn() {
                 >
                     Wachtwoord:
                 </InputField>
-
                 <button className="form-button" type="submit">Inloggen</button>
             </form>
 
