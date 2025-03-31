@@ -21,7 +21,7 @@ function NavBar() {
             <div>
                 <button
                     type="button"
-                    onClick={isAuth ? logout : login}
+                    onClick={isAuth ? logout : () => navigate("/signin")}
                 >
                     {isAuth ? "Log out" : "Log in"}
                 </button>
