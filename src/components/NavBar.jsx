@@ -5,7 +5,7 @@ import {AuthContext} from "../context/AuthContext";
 
 function NavBar() {
     const navigate = useNavigate();
-    const {username, isAuth, login, logout} = useContext(AuthContext);
+    const {email, isAuth, login, logout} = useContext(AuthContext);
 
     return (
         <nav>
@@ -17,7 +17,7 @@ function NavBar() {
             </h3>
           </span>
             </Link>
-
+            {email && <p>{email} is ingelogd</p>}
             <div>
                 <button
                     type="button"
