@@ -5,7 +5,12 @@ export const AuthContext = createContext(null);
 
 function AuthContextProvider({children}) {
     const navigate = useNavigate();
-    const [auth, setAuth] = useState({username: "", email: "", isAuth: false});
+    const [auth, setAuth] = useState({
+        isAuth: false,
+        email: "",
+        username: "",
+        user: null,
+    });
 
     function login(email, pass) {
         setAuth({...auth, email: email, isAuth: true});
