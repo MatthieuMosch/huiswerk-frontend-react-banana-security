@@ -10,21 +10,22 @@ function SignUp() {
     const {login} = useContext(AuthContext);
     const uri = "http://localhost:3000";
     const [formState, setFormState] = useState({
-        name: "",
+        username: "",
         email: "",
-        pass: "",
+        password: "",
     })
 
     async function register() {
+        setErrorMsg("");
+        setLoading(true);
         try {
-            setErrorMsg("");
-            setLoading(true);
-            const response = await axios.get(uri);
+            const response = await axios.post(uri + "/register", formState);
             console.log("response", response);
         } catch(e) {
             setErrorMsg(e.message);
-            console.error("foutje", e);
+            console.error("foutje", e); // with the dutch word "foutje" so i can recognize it as my error log
         } finally {
+            // TODO: abort
             setLoading(false);
         }
     }
@@ -53,17 +54,17 @@ function SignUp() {
       <form onSubmit={handleSubmit}>
           <InputField
               type="text"
-              name="name"
-              placeholder="Naam"
-              value={formState.name}
+              name="username"
+              placeholder="Gebruikersaam"
+              value={formState.username}
               changeHandler={handleChange}
           >
-              Naam::
+              Gebruikersnaam::
           </InputField>
           <InputField
-              type="text"
+              type="email"
               name="email"
-              placeholder="Email"
+              placeholder="naam@domein"
               value={formState.email}
               changeHandler={handleChange}
           >
@@ -71,9 +72,9 @@ function SignUp() {
           </InputField>
           <InputField
               type="password"
-              name="pass"
-              placeholder="Password"
-              value={formState.pass}
+              name="password"
+              placeholder=""
+              value={formState.password}
               changeHandler={handleChange}
           >
               Wachtwoord:
