@@ -1,21 +1,41 @@
 import {createContext, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import axios from "axios";
 
 export const AuthContext = createContext(null);
 
 function AuthContextProvider({children}) {
+    const uri = "http://localhost:3000";
+    const [loading, setLoading] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
     const navigate = useNavigate();
     const [auth, setAuth] = useState({
         isAuth: false,
         email: "",
         username: "",
         user: null,
+        status: "pending"
     });
 
-    function login(email, pass) {
-        setAuth({...auth, email: email, isAuth: true});
-        console.log("Gebruiker is ingelogd!");
-        navigate("/profile");
+    async function login(credentials) {
+        setErrorMsg("");
+        setLoading(true);
+        console.log("credentials", credentials);
+        try {
+            const response = await axios.post(uri + "/login", credentials);
+            console.log("response", response);
+            if (response.status === 200) {
+                setAuth({...auth, isAuth: true});
+                console.log("Gebruiker is ingelogd!");
+                navigate("/profile");
+            }
+        } catch (err) {
+            setErrorMsg("e-mail en/of wachtwoord zijn niet goed");
+            console.error(err);
+        } finally {
+            // TODO: abort
+            setLoading(false);
+        }
     }
 
     function logout() {
@@ -26,6 +46,7 @@ function AuthContextProvider({children}) {
 
     return (
         <AuthContext.Provider value={{...auth, login: login, logout: logout}}>
+            {errorMsg && <dialog open>{errorMsg}</dialog>}
             {children}
         </AuthContext.Provider>
     );

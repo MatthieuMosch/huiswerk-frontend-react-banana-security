@@ -5,10 +5,10 @@ import {AuthContext} from "../context/AuthContext";
 import InputField from "../components/InputField";
 
 function SignUp() {
+    const uri = "http://localhost:3000";
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
     const {login} = useContext(AuthContext);
-    const uri = "http://localhost:3000";
     const [formState, setFormState] = useState({
         username: "",
         email: "",
@@ -21,9 +21,16 @@ function SignUp() {
         try {
             const response = await axios.post(uri + "/register", formState);
             console.log("response", response);
+            if (response.status === 201) {
+                console.log("User registered successfully.");
+                if (response.data.accessToken) {
+                    console.log("logging in with email and password");
+                    login();
+                }
+            }
         } catch(e) {
             setErrorMsg(e.message);
-            console.error("foutje", e); // with the dutch word "foutje" so i can recognize it as my error log
+            console.error("error", e);
         } finally {
             // TODO: abort
             setLoading(false);

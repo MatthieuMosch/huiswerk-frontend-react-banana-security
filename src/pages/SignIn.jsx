@@ -7,7 +7,7 @@ function SignIn() {
     const {login} = useContext(AuthContext);
     const [formState, setFormState] = useState({
         email: "",
-        pass: "",
+        password: "",
     })
     function handleChange(e) {
         const { name, value } = e.target;
@@ -18,7 +18,7 @@ function SignIn() {
     }
     function handleSubmit(e) {
         e.preventDefault();
-        login(formState.email, formState.pass);
+        login(formState);
     }
     return (
         <>
@@ -28,9 +28,9 @@ function SignIn() {
 
             <form onSubmit={handleSubmit}>
                 <InputField
-                    type="text"
+                    type="email"
                     name="email"
-                    placeholder="Email"
+                    placeholder="naam@domein"
                     value={formState.email}
                     changeHandler={handleChange}
                 >
@@ -38,9 +38,9 @@ function SignIn() {
                 </InputField>
                 <InputField
                     type="password"
-                    name="pass"
-                    placeholder="Password"
-                    value={formState.pass}
+                    name="password"
+                    placeholder=""
+                    value={formState.password}
                     changeHandler={handleChange}
                 >
                     Wachtwoord:
