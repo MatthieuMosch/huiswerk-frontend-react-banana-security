@@ -3,14 +3,14 @@ import {Link} from 'react-router-dom';
 import {AuthContext} from "../context/AuthContext";
 
 function Profile() {
-    const {username, email} = useContext(AuthContext);
+    const {user} = useContext(AuthContext);
     return (
         <>
             <h1>Profielpagina</h1>
             <section>
                 <h2>Gegevens</h2>
-                <p><strong>Gebruikersnaam:</strong> {username}</p>
-                <p><strong>Email:</strong> {email}</p>
+                <p><strong>Gebruikersnaam:</strong> {user.username}</p>
+                <p><strong>Email:</strong> {user.email}</p>
             </section>
             <section>
                 <h2>Strikt geheime profiel-content</h2>

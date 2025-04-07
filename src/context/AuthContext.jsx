@@ -1,6 +1,7 @@
 import {createContext, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
+import {jwtDecode} from "jwt-decode";
 
 export const AuthContext = createContext(null);
 
@@ -11,26 +12,54 @@ function AuthContextProvider({children}) {
     const navigate = useNavigate();
     const [auth, setAuth] = useState({
         isAuth: false,
-        email: "",
-        username: "",
-        user: null,
+        user: {},
         status: "pending"
     });
+
+    async function getUser(jwt) {
+        setErrorMsg("");
+        setLoading(true);
+        localStorage.setItem("jwt", jwt);
+        const decodedJWT = jwtDecode(jwt);
+        console.log("decoded jwt", decodedJWT);
+        try {
+            const response = await axios.get(
+                `${uri}/600/users/${decodedJWT.sub}`, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${jwt}`,
+                    }
+                })
+            console.log("user data", response.data);
+            setAuth({
+                ...auth,
+                isAuth: true,
+                user: {
+                    username: response.data.username,
+                    email: response.data.email,
+                    id: response.data.id,
+            }});
+        } catch (err) {
+            setErrorMsg(err.message);
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    }
 
     async function login(credentials) {
         setErrorMsg("");
         setLoading(true);
-        console.log("credentials", credentials);
         try {
             const response = await axios.post(uri + "/login", credentials);
-            console.log("response", response);
             if (response.status === 200) {
                 setAuth({...auth, isAuth: true});
                 console.log("Gebruiker is ingelogd!");
+                void getUser(response.data.accessToken);
                 navigate("/profile");
             }
         } catch (err) {
-            setErrorMsg("e-mail en/of wachtwoord zijn niet goed");
+            setErrorMsg(err.response.data);
             console.error(err);
         } finally {
             // TODO: abort
@@ -45,9 +74,9 @@ function AuthContextProvider({children}) {
     }
 
     return (
-        <AuthContext.Provider value={{...auth, login: login, logout: logout}}>
-            {errorMsg && <dialog open>{errorMsg}</dialog>}
+        <AuthContext.Provider value={{...auth, login, logout}}>
             {children}
+            {errorMsg && <dialog open>{errorMsg}</dialog>}
         </AuthContext.Provider>
     );
 }
