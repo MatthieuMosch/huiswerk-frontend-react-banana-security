@@ -1,11 +1,12 @@
 import axios from "axios";
-import {useContext, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import {AuthContext} from "../context/AuthContext";
 import {Link} from 'react-router-dom';
 import InputField from "../components/InputField";
 
 function SignUp() {
     const uri = "http://localhost:3000";
+    const controller = new AbortController();
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
     const {login} = useContext(AuthContext);
@@ -15,11 +16,18 @@ function SignUp() {
         password: "",
     });
 
+    useEffect(() => {
+        return function cleanup() {
+            controller.abort();
+        }
+    },[]);
+
     async function register() {
         setErrorMsg("");
         setLoading(true);
         try {
-            const response = await axios.post(uri + "/register", formState);
+            const response = await axios.post(
+                uri + "/register", formState, {signal: controller.signal,});
             if (response.status === 201) {
                 console.log("User registered successfully.");
                 login({email: formState.email, password: formState.password});

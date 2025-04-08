@@ -8,6 +8,7 @@ export const AuthContext = createContext(null);
 
 function AuthContextProvider({children}) {
     const uri = "http://localhost:3000";
+    const controller = new AbortController();
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
     const navigate = useNavigate();
@@ -24,7 +25,10 @@ function AuthContextProvider({children}) {
         } else {
             void logout();
         }
-    }, [])
+        return function cleanup() {
+            controller.abort();
+        }
+    }, []);
 
     async function getUser(jwt) {
         setErrorMsg("");
@@ -37,7 +41,8 @@ function AuthContextProvider({children}) {
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${jwt}`,
-                    }
+                    },
+                    signal: controller.signal,
                 }
             );
             setAuth({
@@ -62,7 +67,13 @@ function AuthContextProvider({children}) {
         setErrorMsg("");
         setLoading(true);
         try {
-            const response = await axios.post(uri + "/login", credentials);
+            const response = await axios.post(
+                uri + "/login",
+                credentials,
+                {
+                    signal: controller.signal,
+                }
+            );
             if (response.status === 200) {
                 setAuth({...auth, isAuth: true});
                 console.log("Gebruiker is ingelogd!");
