@@ -1,16 +1,16 @@
 import {useContext} from 'react';
-import {Link} from 'react-router-dom';
 import {AuthContext} from "../context/AuthContext";
+import {Link} from 'react-router-dom';
 
 function Profile() {
-    const {user} = useContext(AuthContext);
+    const {username, email} = useContext(AuthContext).user;
     return (
         <>
             <h1>Profielpagina</h1>
             <section>
                 <h2>Gegevens</h2>
-                <p><strong>Gebruikersnaam:</strong> {user.username}</p>
-                <p><strong>Email:</strong> {user.email}</p>
+                <p><strong>Gebruikersnaam:</strong> {username}</p>
+                <p><strong>Email:</strong> {email}</p>
             </section>
             <section>
                 <h2>Strikt geheime profiel-content</h2>

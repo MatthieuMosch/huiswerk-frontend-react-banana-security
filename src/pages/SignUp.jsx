@@ -1,7 +1,7 @@
-import {useContext, useState} from 'react';
 import axios from "axios";
-import {Link} from 'react-router-dom';
+import {useContext, useState} from 'react';
 import {AuthContext} from "../context/AuthContext";
+import {Link} from 'react-router-dom';
 import InputField from "../components/InputField";
 
 function SignUp() {
@@ -13,7 +13,7 @@ function SignUp() {
         username: "",
         email: "",
         password: "",
-    })
+    });
 
     async function register() {
         setErrorMsg("");
@@ -40,7 +40,7 @@ function SignUp() {
 
     function handleSubmit(e) {
         e.preventDefault();
-        register();
+        void register();
     }
 
     return (

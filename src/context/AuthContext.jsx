@@ -1,6 +1,6 @@
+import axios from "axios";
 import {createContext, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import axios from "axios";
 import {jwtDecode} from "jwt-decode";
 import {checkJwt} from "../helpers/checkJWT";
 
@@ -24,7 +24,6 @@ function AuthContextProvider({children}) {
         } else {
             void logout();
         }
-
     }, [])
 
     async function getUser(jwt) {
@@ -39,7 +38,8 @@ function AuthContextProvider({children}) {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${jwt}`,
                     }
-                })
+                }
+            );
             setAuth({
                 ...auth,
                 isAuth: true,
@@ -47,7 +47,8 @@ function AuthContextProvider({children}) {
                     username: response.data.username,
                     email: response.data.email,
                     id: response.data.id,
-                }
+                },
+                status: "done",
             });
         } catch (err) {
             setErrorMsg(err.message);
@@ -78,14 +79,15 @@ function AuthContextProvider({children}) {
     }
 
     function logout() {
-        setAuth({...auth, user: {}, isAuth: false});
+        setAuth({...auth, isAuth: false, user: {}, status: "done"});
+        localStorage.removeItem("jwt");
         console.log("Gebruiker is uitgelogd!");
         navigate("/");
     }
 
     return (
         <AuthContext.Provider value={{...auth, login, logout}}>
-            {children}
+            {auth.status === "done" ? children : <p>Loading...</p>}
             {errorMsg && <dialog open>{errorMsg}</dialog>}
         </AuthContext.Provider>
     );

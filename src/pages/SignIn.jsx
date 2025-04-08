@@ -1,6 +1,6 @@
-import React, {useContext, useState} from 'react';
-import {Link} from 'react-router-dom';
+import {useContext, useState} from 'react';
 import {AuthContext} from "../context/AuthContext";
+import {Link} from 'react-router-dom';
 import InputField from "../components/InputField";
 
 function SignIn() {
@@ -8,18 +8,18 @@ function SignIn() {
     const [formState, setFormState] = useState({
         email: "",
         password: "",
-    })
+    });
+
     function handleChange(e) {
         const { name, value } = e.target;
-        setFormState({
-            ...formState,
-            [name]: value
-        });
+        setFormState({...formState, [name]: value});
     }
+
     function handleSubmit(e) {
         e.preventDefault();
         login(formState);
     }
+
     return (
         <>
             <h1>Inloggen</h1>
