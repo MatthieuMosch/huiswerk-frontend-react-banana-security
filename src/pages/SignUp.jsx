@@ -35,10 +35,7 @@ function SignUp() {
 
     function handleChange(e) {
         const {name, value} = e.target;
-        setFormState({
-            ...formState,
-            [name]: value
-        });
+        setFormState({...formState, [name]: value});
     }
 
     function handleSubmit(e) {

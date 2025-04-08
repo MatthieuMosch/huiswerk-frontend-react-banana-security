@@ -1,7 +1,8 @@
-import {createContext, useState} from "react";
+import {createContext, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import {jwtDecode} from "jwt-decode";
+import {checkJwt} from "../helpers/checkJWT";
 
 export const AuthContext = createContext(null);
 
@@ -16,12 +17,21 @@ function AuthContextProvider({children}) {
         status: "pending"
     });
 
+    useEffect(() => {
+        const jwtStorage = localStorage.getItem("jwt");
+        if (jwtStorage && checkJwt(jwtStorage)) {
+            void getUser(jwtStorage);
+        } else {
+            void logout();
+        }
+
+    }, [])
+
     async function getUser(jwt) {
         setErrorMsg("");
         setLoading(true);
         localStorage.setItem("jwt", jwt);
         const decodedJWT = jwtDecode(jwt);
-        console.log("decoded jwt", decodedJWT);
         try {
             const response = await axios.get(
                 `${uri}/600/users/${decodedJWT.sub}`, {
@@ -30,7 +40,6 @@ function AuthContextProvider({children}) {
                         Authorization: `Bearer ${jwt}`,
                     }
                 })
-            console.log("user data", response.data);
             setAuth({
                 ...auth,
                 isAuth: true,
@@ -38,7 +47,8 @@ function AuthContextProvider({children}) {
                     username: response.data.username,
                     email: response.data.email,
                     id: response.data.id,
-            }});
+                }
+            });
         } catch (err) {
             setErrorMsg(err.message);
             console.error(err);
@@ -68,7 +78,7 @@ function AuthContextProvider({children}) {
     }
 
     function logout() {
-        setAuth({...auth, username: "", email: "", isAuth: false});
+        setAuth({...auth, user: {}, isAuth: false});
         console.log("Gebruiker is uitgelogd!");
         navigate("/");
     }
