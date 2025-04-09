@@ -36,7 +36,6 @@ function SignUp() {
             setErrorMsg(err.response.data);
             console.error("Error", err);
         } finally {
-            // TODO: abort
             setLoading(false);
         }
     }

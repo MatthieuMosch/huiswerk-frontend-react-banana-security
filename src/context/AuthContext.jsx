@@ -84,7 +84,6 @@ function AuthContextProvider({children}) {
             setErrorMsg(err.response.data);
             console.error(err);
         } finally {
-            // TODO: abort
             setLoading(false);
         }
     }
